@@ -39,6 +39,29 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .lb .lb-c{position:absolute;top:32px;left:24px;color:#8c8c8c;font:13px Manrope,system-ui,sans-serif;letter-spacing:.08em}
 @media (max-width:600px){.lb .lb-p,.lb .lb-n{top:auto;bottom:64px;margin:0}.lb img{max-height:72vh}}
 .zoom{cursor:zoom-in}
+html[data-theme=dark]{background:#0b0b0b;color-scheme:dark}
+html[data-theme=dark] [style*="background: #fbfaf7"]{background:#0e0e0e!important}
+html[data-theme=dark] [style*="background: #f3f0ea"]{background:#161616!important}
+html[data-theme=dark] [style*="background: #ffffff"]{background:#1b1b1b!important}
+html[data-theme=dark] [style*="background: #fbfaf7ee"]{background:rgba(14,14,14,.93)!important}
+html[data-theme=dark] [style*="color: #111111"]{color:#ece8e1!important}
+html[data-theme=dark] [style*="color: #2a2a2a"]{color:#d6d1c8!important}
+html[data-theme=dark] [style*="color: #333333"]{color:#cfcac2!important}
+html[data-theme=dark] [style*="color: #4a4a4a"]{color:#b8b2a9!important}
+html[data-theme=dark] [style*="color: #5a5a5a"]{color:#a8a29a!important}
+html[data-theme=dark] [style*="color: #595959"]{color:#a8a29a!important}
+html[data-theme=dark] [style*="color: #474747"]{color:#a8a29a!important}
+html[data-theme=dark] [style*="color: #6a6a6a"]{color:#8f8a84!important}
+html[data-theme=dark] [style*="color: #8a7142"]{color:#c9ae74!important}
+html[data-theme=dark] [style*="#e6e2da"]{border-color:#2c2c2c!important}
+html[data-theme=dark] [style*="#e0dbd2"]{border-color:#2c2c2c!important}
+html[data-theme=dark] [style*="#d6d1c8"]{border-color:#2c2c2c!important}
+html[data-theme=dark] [style*="border: 1px solid #111111"]{border-color:#5a5a5a!important}
+html[data-theme=dark] [style*="border-bottom: 1px solid #e6e2da"]{border-color:#232323!important}
+html.theme-anim,html.theme-anim *{transition:background-color .7s ease,color .7s ease,border-color .7s ease!important}
+.theme-btn{width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;border:1px solid #b9a06a88;background:transparent;color:inherit;border-radius:2px;cursor:pointer;padding:0}
+.theme-btn:hover{background:#b9a06a;color:#0b0b0b;border-color:#b9a06a}
+.theme-btn .sun{display:none}html[data-theme=dark] .theme-btn .sun{display:block}html[data-theme=dark] .theme-btn .moon{display:none}
 .lb.light{background:rgba(250,249,246,.97)}
 .lb.light figcaption{color:#2a2a2a}.lb.light .lb-c{color:#6a6a6a}
 .lb.light img{box-shadow:0 30px 80px rgba(0,0,0,.18)}
@@ -53,7 +76,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 @media (max-width:600px){.lb .lb-h{top:auto;bottom:128px}}
 .lb .lb-m .sun{display:none}.lb.light .lb-m .sun{display:block}.lb.light .lb-m .moon{display:none}
 @media (prefers-reduced-motion:reduce){.js .reveal{opacity:1;transform:none;transition:none}}</style>
-<script>document.documentElement.classList.add('js')</script>
+<script>document.documentElement.classList.add('js');try{if(localStorage.getItem('siteTheme')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
 </head>
 <body>
 <div style="background: #fbfaf7; color: #111111; font-family: 'Manrope', system-ui, sans-serif; font-size: 16px; line-height: 1.6; width: 100%; overflow-x: clip">
@@ -383,6 +406,19 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   })();
   var x0=null;lb.addEventListener('touchstart',function(e){x0=e.touches[0].clientX},{passive:true});
   lb.addEventListener('touchend',function(e){if(x0===null||(window.__lbS||1)>1){x0=null;return;}var dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>50)show(dx<0?i+1:i-1);x0=null});
+})();
+</script>
+<script>
+(function(){
+  var nav=document.querySelector('header nav > div');if(!nav)return;
+  var book=nav.querySelector('a[href="#book"]');
+  var b=document.createElement('button');b.type='button';b.className='theme-btn';
+  var ic=function(d){return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="'+d+'"/></svg>'};
+  b.innerHTML='<span class="moon">'+ic('M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z')+'</span><span class="sun">'+ic('M12 4V2M12 22v-2M4 12H2M22 12h-2M5.6 5.6 4.2 4.2M19.8 19.8l-1.4-1.4M5.6 18.4l-1.4 1.4M19.8 4.2l-1.4 1.4M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8z')+'</span>';
+  var root=document.documentElement;
+  function label(){var d=root.getAttribute('data-theme')==='dark';b.setAttribute('aria-label',d?'Switch to light mode':'Switch to dark mode');b.setAttribute('aria-pressed',d?'true':'false');b.title=d?'Light mode':'Dark mode';var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.content=d?'#0b0b0b':'#fbfaf7';}
+  b.addEventListener('click',function(){root.classList.add('theme-anim');var d=root.getAttribute('data-theme')!=='dark';if(d)root.setAttribute('data-theme','dark');else root.removeAttribute('data-theme');try{localStorage.setItem('siteTheme',d?'dark':'light')}catch(e){}label();setTimeout(function(){root.classList.remove('theme-anim')},800);});
+  nav.insertBefore(b,book||null);label();
 })();
 </script>
 </body>
