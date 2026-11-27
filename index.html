@@ -39,6 +39,13 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .lb .lb-c{position:absolute;top:32px;left:24px;color:#8c8c8c;font:13px Manrope,system-ui,sans-serif;letter-spacing:.08em}
 @media (max-width:600px){.lb .lb-p,.lb .lb-n{top:auto;bottom:64px;margin:0}.lb img{max-height:72vh}}
 .zoom{cursor:zoom-in}
+.lb.light{background:rgba(250,249,246,.97)}
+.lb.light figcaption{color:#2a2a2a}.lb.light .lb-c{color:#6a6a6a}
+.lb.light img{box-shadow:0 30px 80px rgba(0,0,0,.18)}
+.lb.light button{background:rgba(255,255,255,.75);color:#111;border-color:#b9a06a99}
+.lb.light button:hover{background:#b9a06a;color:#0b0b0b}
+.lb .lb-m{top:20px;right:84px}
+.lb .lb-m .sun{display:none}.lb.light .lb-m .sun{display:block}.lb.light .lb-m .moon{display:none}
 @media (prefers-reduced-motion:reduce){.js .reveal{opacity:1;transform:none;transition:none}}</style>
 <script>document.documentElement.classList.add('js')</script>
 </head>
@@ -328,7 +335,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   var imgs=[].slice.call(document.querySelectorAll('.zoom img'));if(!imgs.length)return;
   var svg=function(d){return '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="'+d+'"/></svg>'};
   var lb=document.createElement('div');lb.className='lb';lb.setAttribute('role','dialog');lb.setAttribute('aria-modal','true');lb.setAttribute('aria-label','Photo viewer');
-  lb.innerHTML='<span class="lb-c"></span><img alt=""><figcaption></figcaption><button class="lb-x" aria-label="Close">'+svg('M6 6l12 12M18 6L6 18')+'</button><button class="lb-p" aria-label="Previous photo">'+svg('M15 5l-7 7 7 7')+'</button><button class="lb-n" aria-label="Next photo">'+svg('M9 5l7 7-7 7')+'</button>';
+  lb.innerHTML='<span class="lb-c"></span><img alt=""><figcaption></figcaption><button class="lb-x" aria-label="Close">'+svg('M6 6l12 12M18 6L6 18')+'</button><button class="lb-m" aria-label="Switch to light background" aria-pressed="false"><span class="moon">'+svg('M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z')+'</span><span class="sun">'+svg('M12 4V2M12 22v-2M4 12H2M22 12h-2M5.6 5.6 4.2 4.2M19.8 19.8l-1.4-1.4M5.6 18.4l-1.4 1.4M19.8 4.2l-1.4 1.4M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8z')+'</span></button><button class="lb-p" aria-label="Previous photo">'+svg('M15 5l-7 7 7 7')+'</button><button class="lb-n" aria-label="Next photo">'+svg('M9 5l7 7-7 7')+'</button>';
   document.body.appendChild(lb);
   var big=lb.querySelector('img'),cap=lb.querySelector('figcaption'),cnt=lb.querySelector('.lb-c'),i=0,last=null;
   function show(n){i=(n+imgs.length)%imgs.length;var im=imgs[i];big.src=im.currentSrc||im.src;big.alt=im.alt;var fc=im.parentNode.querySelector('figcaption');cap.textContent=fc?fc.textContent:im.alt;cnt.textContent=(i+1)+' / '+imgs.length;}
@@ -337,6 +344,12 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   imgs.forEach(function(im,k){var f=im.parentNode;f.setAttribute('tabindex','0');f.setAttribute('role','button');f.setAttribute('aria-label','Open photo full screen: '+(im.alt||''));
     f.addEventListener('click',function(){open(k)});f.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();open(k)}});});
   lb.querySelector('.lb-x').addEventListener('click',close);
+  var mb=lb.querySelector('.lb-m');
+  function setMode(light){lb.classList.toggle('light',light);mb.setAttribute('aria-pressed',light?'true':'false');mb.setAttribute('aria-label',light?'Switch to dark background':'Switch to light background');try{localStorage.setItem('lbMode',light?'light':'dark')}catch(e){}}
+  var saved='dark';try{saved=localStorage.getItem('lbMode')||'dark'}catch(e){}
+  setMode(saved==='light');
+  mb.addEventListener('click',function(e){e.stopPropagation();setMode(!lb.classList.contains('light'))});
+  document.addEventListener('keydown',function(e){if(lb.classList.contains('open')&&(e.key==='l'||e.key==='L'))setMode(!lb.classList.contains('light'))});
   lb.querySelector('.lb-p').addEventListener('click',function(e){e.stopPropagation();show(i-1)});
   lb.querySelector('.lb-n').addEventListener('click',function(e){e.stopPropagation();show(i+1)});
   lb.addEventListener('click',function(e){if(e.target===lb)close()});
