@@ -295,14 +295,14 @@ html.theme-anim,html.theme-anim *{transition:background-color .7s ease,color .7s
 <label for="rv-name" style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; color: #333333">Your name<input id="rv-name" required="" autocomplete="name" style="height: 48px; font-size: 16px; padding: 0 14px; background: #ffffff; color: #111111; border: 1px solid #d6d1c8; border-radius: 4px"></label>
 <label for="rv-text" style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; color: #333333">Your review<textarea id="rv-text" rows="4" required="" placeholder="The design, the session, the healing…" style="font-size: 16px; padding: 12px 14px; background: #ffffff; color: #111111; border: 1px solid #d6d1c8; border-radius: 4px; font-family: inherit; resize: vertical"></textarea></label>
 <input id="rv-website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0">
-<button type="submit" style="height: 54px; border: 0; border-radius: 2px; font-size: 16px; font-weight: 600; letter-spacing: .04em; font-family: inherit; cursor: pointer; background: #b9a06a; color: #0b0b0b">Post review</button>
+<button type="submit" style="height: 54px; border: 0; border-radius: 2px; font-size: 16px; font-weight: 600; letter-spacing: .04em; font-family: inherit; cursor: pointer; background: #b9a06a; color: #0b0b0b">Post &amp; send to Messenger</button>
 <p id="rv-error" style="margin: 0; color: #a03a2c; font-size: 14px"></p>
 </form>
 </div>
 <div id="rv-thanks" hidden>
 <div style="display: flex; flex-direction: column; gap: 14px">
 <h3 style="margin: 0; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 500; font-size: 34px">Thank you for your review!</h3>
-<p style="margin: 0; color: #4a4a4a">Your review is now posted on our website.</p>
+<p style="margin: 0; color: #4a4a4a">Your review is posted on our website, and Messenger is opening so you can send it to JAVAR TATTOO.</p>
 <button type="button" id="rv-reset" style="align-self: flex-start; min-height: 44px; background: none; border: 0; color: #8a7142; text-decoration: underline; font-size: 15px; font-family: inherit; cursor: pointer; padding: 0">Write another review</button>
 </div>
 </div>
@@ -493,6 +493,11 @@ html.theme-anim,html.theme-anim *{transition:background-color .7s ease,color .7s
   if(!f||!list)return;
   var reviews=[],configured=true;
   function starStr(n){n=Math.round(n);return '\u2605'.repeat(n)+'\u2606'.repeat(5-n);}
+  function toMessenger(body){var msg='Review for JAVAR TATTOO\nRating: '+starStr(body.rating)+' ('+body.rating+'/5)\nName: '+body.name+'\n\n'+body.text+'\n\n(Posted on javar-tattoo.vercel.app)';
+    var u='https://m.me/JAVARTATTOO?text='+encodeURIComponent(msg);
+    try{if(navigator.clipboard)navigator.clipboard.writeText(msg).catch(function(){})}catch(e){}
+    try{if(/Android|iPhone|iPad|iPod|FBAN|FBAV|Instagram|Messenger|Viber/i.test(navigator.userAgent)){setTimeout(function(){window.location.href=u},400)}else{window.open(u,'_blank','noopener')}}catch(e){}
+    return u;}
   function fmt(d){try{return new Date(d).toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'})}catch(e){return ''}}
   function card(rv){var c=document.createElement('article');c.setAttribute('style','background: #ffffff; border: 1px solid #e6e2da; border-radius: 4px; padding: 24px; display: flex; flex-direction: column; gap: 10px');
     var st=document.createElement('div');st.setAttribute('style','color: #b9a06a; font-size: 18px; letter-spacing: 2px');st.setAttribute('aria-label',rv.rating+' out of 5 stars');st.textContent=starStr(rv.rating);
@@ -512,14 +517,16 @@ html.theme-anim,html.theme-anim *{transition:background-color .7s ease,color .7s
     var body={rating:c?parseInt(c.value,10):5,name:document.getElementById('rv-name').value.trim(),text:document.getElementById('rv-text').value.trim(),website:(document.getElementById('rv-website')||{}).value||''};
     if(body.name.length<2){err.textContent='Please enter your name.';return;}
     if(body.text.length<5){err.textContent='Please write a few words about your experience.';return;}
+    var mu=toMessenger(body);
     var b=f.querySelector('button[type=submit]');if(b){b.disabled=true;b.textContent='Posting\u2026';}
-    fetch('/api/reviews',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(x){return x.json().then(function(j){return {s:x.status,j:j}})}).then(function(o){
-      if(b){b.disabled=false;b.textContent='Post review';}
-      if(o.s===201&&o.j.review){reviews.unshift(o.j.review);render();w.hidden=true;t.hidden=false;}
+    fetch('/api/reviews',{method:'POST',keepalive:true,headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(x){return x.json().then(function(j){return {s:x.status,j:j}})}).then(function(o){
+      if(b){b.disabled=false;b.textContent='Post & send to Messenger';}
+      var tp=t.querySelector('p');
+      if(o.s===201&&o.j.review){reviews.unshift(o.j.review);render();if(tp)tp.textContent='Your review is posted on our website, and Messenger is opening so you can send it to JAVAR TATTOO. Just tap Send.';w.hidden=true;t.hidden=false;}
+      else if(o.s===503){if(tp)tp.textContent='Messenger is opening with your review. Just tap Send. (Posting reviews on the website opens soon.)';w.hidden=true;t.hidden=false;}
       else if(o.s===429){err.textContent='You just posted a review. Please wait a couple of minutes before posting another.';}
-      else if(o.s===503){err.textContent='Reviews are not open yet. Please try again soon.';}
       else{err.textContent='Sorry, your review could not be posted. Please check your name and review and try again.';}
-    }).catch(function(){if(b){b.disabled=false;b.textContent='Post review';}err.textContent='Network error. Please try again.';});
+    }).catch(function(){if(b){b.disabled=false;b.textContent='Post & send to Messenger';}err.textContent='Could not post on the website (network error), but Messenger opened with your review.';});
   });
   if(r)r.addEventListener('click',function(){f.reset();t.hidden=true;w.hidden=false;});
 })();
