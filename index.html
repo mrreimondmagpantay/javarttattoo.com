@@ -400,7 +400,7 @@ html.theme-anim,html.theme-anim *{transition:background-color .7s ease,color .7s
     var mUrl='https://m.me/JAVARTATTOO?text='+enc;
     var vUrl='viber://chat?number=%2B639632809230&draft='+enc;
     try{if(navigator.clipboard)navigator.clipboard.writeText(msg).catch(function(){})}catch(err){}
-    if(via==='viber'){try{window.location.href=vUrl}catch(err){}}else{try{window.open(mUrl,'_blank','noopener')}catch(err){}}
+    if(via==='viber'){try{window.location.href=vUrl}catch(err){}}else{try{if(/Android|iPhone|iPad|iPod|FBAN|FBAV|Instagram|Messenger|Viber/i.test(navigator.userAgent)){setTimeout(function(){window.location.href=mUrl},50)}else{window.open(mUrl,'_blank','noopener')}}catch(err){}}
     w.hidden=true;t.hidden=false;
     var p=t.querySelector('p');
     if(p){p.textContent=via==='viber'?'Viber is opening a chat with JAVAR TATTOO (+63 963 280 9230) with your message ready. Just tap Send. If Viber does not open, install Viber or message +63 963 280 9230; your message is copied below.':'Messenger is opening with your message ready to send. Just tap Send. If the message box is empty, paste it (we copied it for you) or use Viber instead.';}
@@ -489,13 +489,21 @@ html.theme-anim,html.theme-anim *{transition:background-color .7s ease,color .7s
     var msg='Review for JAVAR TATTOO\nRating: '+'\u2605'.repeat(n)+'\u2606'.repeat(5-n)+' ('+n+'/5)\nName: '+name+'\n\n'+txt+'\n\n(Sent from javar-tattoo.vercel.app)';
     var enc=encodeURIComponent(msg);
     try{if(navigator.clipboard)navigator.clipboard.writeText(msg).catch(function(){})}catch(err){}
-    if(via==='viber'){try{window.location.href='viber://chat?number=%2B639632809230&draft='+enc}catch(err){}}else{try{window.open('https://m.me/JAVARTATTOO?text='+enc,'_blank','noopener')}catch(err){}}
+    if(via==='viber'){try{window.location.href='viber://chat?number=%2B639632809230&draft='+enc}catch(err){}}else{try{var u='https://m.me/JAVARTATTOO?text='+enc;if(/Android|iPhone|iPad|iPod|FBAN|FBAV|Instagram|Messenger|Viber/i.test(navigator.userAgent)){setTimeout(function(){window.location.href=u},50)}else{window.open(u,'_blank','noopener')}}catch(err){}}
     w.hidden=true;t.hidden=false;
     var p=t.querySelector('p');if(p)p.textContent=(via==='viber'?'Viber is opening a chat with +63 963 280 9230':'Messenger is opening')+' with your review ready. Just tap Send. If the message box is empty, paste it (we copied it for you).';
     var box=t.querySelector('.rv-msg');if(!box){box=document.createElement('div');box.className='rv-msg';box.setAttribute('style','white-space: pre-wrap; font-size: 14px; line-height: 1.5; padding: 14px 16px; border: 1px solid #e6e2da; border-radius: 4px; background: #fbfaf7; color: #333333');p.parentNode.insertBefore(box,p.nextSibling);}
     box.textContent=msg;
   });
   if(r)r.addEventListener('click',function(){f.reset();t.hidden=true;w.hidden=false;});
+})();
+</script>
+<script>
+(function(){
+  var mobile=(window.matchMedia&&window.matchMedia('(pointer:coarse)').matches)||/Android|iPhone|iPad|iPod|FBAN|FBAV|Instagram|Messenger|Viber/i.test(navigator.userAgent);
+  if(!mobile)return;
+  [].forEach.call(document.querySelectorAll('a[target="_blank"]'),function(a){a.removeAttribute('target');});
+  document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^="https://www.facebook.com"],a[href^="https://m.me"]');if(!a)return;e.preventDefault();window.location.href=a.href;},true);
 })();
 </script>
 </body>
