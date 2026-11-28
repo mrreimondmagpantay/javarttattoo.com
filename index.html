@@ -274,7 +274,7 @@ html.theme-anim,html.theme-anim *{transition:background-color .7s ease,color .7s
 <div><div style="color: #5a5a5a; font-size: 14px">Facebook</div><a href="https://www.facebook.com/JAVARTATTOO" style="color: #111111">facebook.com/JAVARTATTOO</a></div>
 <div><div style="color: #5a5a5a; font-size: 14px">Instagram</div><a href="https://www.instagram.com/javar_tattoo/" style="color: #111111">@javar_tattoo</a></div>
 <div><div style="color: #5a5a5a; font-size: 14px">Messenger</div><a href="https://m.me/JAVARTATTOO" style="color: #111111">m.me/JAVARTATTOO</a></div>
-<div><div style="color: #5a5a5a; font-size: 14px">Phone / WhatsApp</div>[YOUR PHONE]</div>
+<div><div style="color: #5a5a5a; font-size: 14px">Phone / Viber</div><a href="viber://chat?number=%2B639632809230" style="color: #111111">+63 963 280 9230</a></div>
 <div><div style="color: #5a5a5a; font-size: 14px">Email</div>[YOUR EMAIL]</div>
 <div><div style="color: #5a5a5a; font-size: 14px">Studio</div><a href="https://maps.app.goo.gl/7Y9EmvXUu8MwAUWV8" style="color: #111111">S. Castillo St, Tanauan City, Batangas</a></div>
 <div><div style="color: #5a5a5a; font-size: 14px">Hours</div>Tue–Sat 11:00–20:00 · Sun by appointment · Mon closed</div>
@@ -292,14 +292,14 @@ html.theme-anim,html.theme-anim *{transition:background-color .7s ease,color .7s
 <option>Fine-line tattoo</option><option>Black &amp; grey realism</option><option>Portrait tattoo</option><option>Pointillism / dotwork</option><option>Piercing</option><option>Not sure yet</option>
 </select></label>
 <label for="bk-idea" style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; color: #333333">Your idea, placement and size<textarea id="bk-idea" rows="4" style="font-size: 16px; padding: 12px 14px; background: #ffffff; color: #111111; border: 1px solid #d6d1c8; border-radius: 10px; font-family: inherit; resize: vertical"></textarea></label>
-<button type="submit" style="height: 54px; border: 0; border-radius: 2px; background: #b9a06a; color: #0b0b0b; font-size: 16px; font-weight: 700; font-family: inherit; cursor: pointer">Send via Messenger</button>
+<div style="display: flex; flex-wrap: wrap; gap: 12px"><button type="submit" name="via" value="messenger" style="height: 54px; border: 0; border-radius: 2px; background: #b9a06a; color: #0b0b0b; font-size: 16px; font-weight: 700; font-family: inherit; cursor: pointer; flex: 1 1 200px">Send via Messenger</button><button type="submit" name="via" value="viber" style="height: 54px; border: 0; border-radius: 2px; background: #7360f2; color: #ffffff; font-size: 16px; font-weight: 700; font-family: inherit; cursor: pointer; flex: 1 1 200px">Send via Viber</button></div>
 </form>
 </div>
 <div id="bk-thanks" hidden>
 <div style="display: flex; flex-direction: column; gap: 14px; padding: 12px 0">
 <h3 style="margin: 0; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 400; font-size: 32px">Thank you!</h3>
-<p style="margin: 0; color: #4a4a4a">Messenger is opening with your message ready to send. Just tap Send, and add reference photos there.</p>
-<a href="https://m.me/JAVARTATTOO" style="align-self: flex-start; color: #0b0b0b; background: #b9a06a; text-decoration: none; padding: 13px 24px; border-radius: 2px; font-weight: 600; letter-spacing: .04em">Open Messenger</a>
+<p style="margin: 0; color: #4a4a4a">Your message is ready to send. Just tap Send in Messenger or Viber, and add reference photos there.</p>
+<div style="display: flex; flex-wrap: wrap; gap: 10px"><a href="https://m.me/JAVARTATTOO" style="align-self: flex-start; color: #0b0b0b; background: #b9a06a; text-decoration: none; padding: 13px 24px; border-radius: 2px; font-weight: 600; letter-spacing: .04em">Open Messenger</a><a href="viber://chat?number=%2B639632809230" style="color: #ffffff; background: #7360f2; text-decoration: none; padding: 13px 24px; border-radius: 2px; font-weight: 600; letter-spacing: .04em">Open Viber</a></div>
 <button type="button" id="bk-reset" style="align-self: flex-start; min-height: 44px; background: none; border: 0; color: #8a7142; text-decoration: underline; font-size: 15px; font-family: inherit; cursor: pointer; padding: 0">Send another request</button>
 </div>
 </div>
@@ -353,14 +353,19 @@ html.theme-anim,html.theme-anim *{transition:background-color .7s ease,color .7s
 (function(){
   var f=document.getElementById('bk-form'),w=document.getElementById('bk-formwrap'),t=document.getElementById('bk-thanks'),r=document.getElementById('bk-reset');
   if(f)f.addEventListener('submit',function(e){e.preventDefault();
+    var via=(e.submitter&&e.submitter.value)||'messenger';
     var v=function(id){var el=document.getElementById(id);return el?el.value.trim():''};
     var msg='Hi JAVAR TATTOO! I would like to book a consultation.\n\nName: '+v('bk-name')+'\nContact: '+v('bk-contact')+'\nService: '+v('bk-service')+(v('bk-idea')?'\nIdea, placement & size: '+v('bk-idea'):'')+'\n\n(Sent from javar-tattoo.vercel.app)';
-    var url='https://m.me/JAVARTATTOO?text='+encodeURIComponent(msg);
+    var enc=encodeURIComponent(msg);
+    var mUrl='https://m.me/JAVARTATTOO?text='+enc;
+    var vUrl='viber://chat?number=%2B639632809230&draft='+enc;
     try{if(navigator.clipboard)navigator.clipboard.writeText(msg).catch(function(){})}catch(err){}
-    var win=null;try{win=window.open(url,'_blank','noopener')}catch(err){}
+    if(via==='viber'){try{window.location.href=vUrl}catch(err){}}else{try{window.open(mUrl,'_blank','noopener')}catch(err){}}
     w.hidden=true;t.hidden=false;
-    var p=t.querySelector('p');if(p){p.textContent='Messenger is opening with your message ready to send. Just tap Send. If the message box is empty, paste it (we copied it for you) or copy it below.';}
-    var a=t.querySelector('a[href^="https://m.me"]');if(a){a.href=url;a.textContent='Open Messenger';a.target='_blank';a.rel='noopener';}
+    var p=t.querySelector('p');
+    if(p){p.textContent=via==='viber'?'Viber is opening a chat with JAVAR TATTOO (+63 963 280 9230) with your message ready. Just tap Send. If Viber does not open, install Viber or message +63 963 280 9230; your message is copied below.':'Messenger is opening with your message ready to send. Just tap Send. If the message box is empty, paste it (we copied it for you) or use Viber instead.';}
+    var am=t.querySelector('a[href^="https://m.me"]');if(am){am.href=mUrl;am.target='_blank';am.rel='noopener';}
+    var av=t.querySelector('a[href^="viber:"]');if(av){av.href=vUrl;}
     var box=t.querySelector('.bk-msg');if(!box){box=document.createElement('div');box.className='bk-msg';box.setAttribute('style','white-space: pre-wrap; font-size: 14px; line-height: 1.5; padding: 14px 16px; border: 1px solid #e6e2da; border-radius: 4px; background: #fbfaf7; color: #333333');p.parentNode.insertBefore(box,p.nextSibling);
       var cb=document.createElement('button');cb.type='button';cb.textContent='Copy message';cb.setAttribute('style','align-self: flex-start; min-height: 44px; padding: 0 18px; border: 1px solid #111111; background: transparent; color: #111111; border-radius: 2px; font: inherit; cursor: pointer');
       cb.addEventListener('click',function(){try{navigator.clipboard.writeText(box.textContent);cb.textContent='Copied ✓';setTimeout(function(){cb.textContent='Copy message'},2000)}catch(err){}});box.parentNode.insertBefore(cb,box.nextSibling);}
